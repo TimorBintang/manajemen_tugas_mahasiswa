@@ -12,13 +12,10 @@ import kotlinx.coroutines.flow.Flow
 interface TaskDao {
     @Query("SELECT * FROM tugas_mahasiswa ORDER BY deadline ASC")
     fun getAllTasks(): Flow<List<TaskEntity>>
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTask(task: TaskEntity)
-
+    suspend fun insertTask(task: TaskEntity): Long
     @Update
-    suspend fun updateTask(task: TaskEntity)
-
+    suspend fun updateTask(task: TaskEntity): Int
     @Delete
-    suspend fun deleteTask(task: TaskEntity)
+    suspend fun deleteTask(task: TaskEntity): Int
 }
