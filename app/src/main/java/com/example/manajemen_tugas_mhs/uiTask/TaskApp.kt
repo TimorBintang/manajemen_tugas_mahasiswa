@@ -26,7 +26,14 @@ fun TaskApp(viewModel: TaskViewModel) {
 
         // Layar 2: Form Tambah Tugas
         composable("tambah_tugas") {
-            // Nanti diisi di Commit 4
+            TaskFormScreen(
+                onSaveTask = { newTask ->
+                    viewModel.addTask(newTask)
+                },
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
         }
 
         // Layar 3: Detail Tugas
