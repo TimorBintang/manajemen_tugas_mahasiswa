@@ -3,45 +3,29 @@ package com.example.manajemen_tugas_mhs
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.manajemen_tugas_mhs.data.TaskDatabase
+import com.example.manajemen_tugas_mhs.repository.TaskRepository
+import com.example.manajemen_tugas_mhs.uiTask.TaskApp
+import com.example.manajemen_tugas_mhs.viewmodel.TaskViewModel
+import com.example.manajemen_tugas_mhs.viewmodel.TaskViewModelFactory
 import com.example.manajemen_tugas_mhs.ui.theme.Manajemen_tugas_mhsTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
+        val database = TaskDatabase.getDatabase(this)
+        val repository = TaskRepository(database.taskDao())
+
         setContent {
             Manajemen_tugas_mhsTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                val taskViewModel: TaskViewModel = viewModel(
+                    factory = TaskViewModelFactory(repository)
+                )
+
+                TaskApp(viewModel = taskViewModel)
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Manajemen_tugas_mhsTheme {
-        Greeting("Android")
     }
 }
