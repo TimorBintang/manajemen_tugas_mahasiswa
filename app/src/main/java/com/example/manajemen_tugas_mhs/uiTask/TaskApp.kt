@@ -3,9 +3,11 @@ package com.example.manajemen_tugas_mhs.uiTask
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.manajemen_tugas_mhs.viewmodel.TaskViewModel
 
 @Composable
@@ -36,9 +38,27 @@ fun TaskApp(viewModel: TaskViewModel) {
             )
         }
 
-        // Layar 3: Detail Tugas
-        composable("detail_tugas/{taskId}") {
-            // Nanti diisi di Commit 5
+        // Layar 3 & 4: Detail & Edit Status / Hapus Tugas
+        composable(
+            route = "detail_tugas/{taskId}",
+            arguments = listOf(navArgument("taskId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val taskId = backStackEntry.arguments?.getInt("taskId") ?: -1
+            val tasks by viewModel.taskList.collectAsState()
+            val selectedTask = tasks.find { it.id == taskId }
+
+            TaskDetailScreen(
+                task = selectedTask,
+                onUpdateStatus = { task, newStatus ->
+                    viewModel.updateTask(task.copy(status = newStatus))
+                },
+                onDeleteTask = { task ->
+                    viewModel.deleteTask(task)
+                },
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }
